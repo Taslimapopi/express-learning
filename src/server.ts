@@ -123,6 +123,8 @@ app.get("/api/v1/users/:id", async (req: Request, res: Response) => {
   }
 });
 
+app.put("/api/v1/users/:id", (req: Request, res: Response) => {});
+
 app.listen(port, () => {
   console.log(`server running on port : ${port}`);
 });
