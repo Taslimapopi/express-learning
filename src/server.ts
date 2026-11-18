@@ -5,16 +5,15 @@ import express, {
 } from "express";
 
 import { Pool } from "pg";
+import config from "./config";
 
 const app: Application = express();
-const port = 5000;
 app.use(express.json());
 app.use(express.text());
 app.use(express.urlencoded({ extended: true }));
 
 const pool = new Pool({
-  connectionString:
-    "postgresql://neondb_owner:npg_GU6rYgpjAXQ5@ep-divine-bird-aobruyda-pooler.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=false&channel_binding=require",
+  connectionString: config.database_string,
 });
 
 // console.log(pool);
@@ -109,6 +108,20 @@ app.get("/api/v1/users/:id", async (req: Request, res: Response) => {
       [id],
     );
 
+    if (result.rowCount === 0) {
+      res.status(404).json({
+        success: false,
+        message: "product not found",
+      });
+    }
+
+    if (result.rowCount === 0) {
+      res.status(404).json({
+        success: false,
+        message: "product not found",
+      });
+    }
+
     res.status(200).json({
       success: true,
       message: "product retrive successfully",
@@ -123,8 +136,70 @@ app.get("/api/v1/users/:id", async (req: Request, res: Response) => {
   }
 });
 
-app.put("/api/v1/users/:id", (req: Request, res: Response) => {});
+app.put("/api/v1/users/:id", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { name, email, age, password } = req.body;
+    const result = await pool.query(
+      `
+      UPDATE users 
+      SET
+      name=COALESCE($1,name),
+      email = COALESCE($2, email),
+      age=COALESCE($3,age),
+      password=COALESCE($4,password),
+      updated_at = NOW()
+      WHERE id=$5 RETURNING *
 
-app.listen(port, () => {
-  console.log(`server running on port : ${port}`);
+      `,
+      [name ?? null, email ?? null, age ?? null, password ?? null, id],
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "product update successfully",
+      data: result.rows[0],
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      error: error,
+    });
+  }
+});
+
+app.delete("/api/v1/users/:id", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query(
+      `
+      DELETE FROM users WHERE id=$1
+      `,
+      [id],
+    );
+
+    console.log(result);
+
+    if (result.rowCount === 0) {
+      res.status(404).json({
+        success: false,
+        message: "product not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "product deleted successfully",
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      error: error,
+    });
+  }
+});
+
+app.listen(config.port, () => {
+  console.log(`server running on port : ${config.port}`);
 });
