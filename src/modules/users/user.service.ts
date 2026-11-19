@@ -1,6 +1,8 @@
+import assert from "assert";
 import { pool } from "../../db";
+import type { IUser } from "./user.interface";
 
-const insertIntoDb = async (payload: any) => {
+const insertIntoDb = async (payload: IUser) => {
   const { name, email, age, password } = payload;
   const result = await pool.query(
     `
@@ -12,6 +14,58 @@ const insertIntoDb = async (payload: any) => {
   return result;
 };
 
+const getUserFromDb = async () => {
+  const result = await pool.query(`
+        SELECT * FROM users
+        `);
+  return result;
+};
+
+const getSingleUserFromDb = async (id: string) => {
+  const result = await pool.query(
+    `
+        SELECT * FROM users WHERE id=$1
+        `,
+    [id],
+  );
+
+  return result;
+};
+
+const updateUserInDb = async (payload: Partial<IUser>, id: string) => {
+  const { name, email, age, password } = payload;
+  const result = await pool.query(
+    `
+        UPDATE users
+        SET
+        name=COALESCE ($1,name),
+        email=COALESCE ($2,email),
+        age=COALESCE ($3, age),
+        password = COALESCE($4, password),
+        updated_at= NOW()
+        WHERE id=$5 RETURNING *
+        
+        `,
+    [name ?? null, email ?? null, age ?? null, password ?? null, id],
+  );
+
+  return result;
+};
+
+const deleteUserFromDb = async (id: string) => {
+  const result = await pool.query(
+    `
+      DELETE FROM users WHERE id=$1
+      `,
+    [id],
+  );
+  return result;
+};
+
 export const userService = {
   insertIntoDb,
+  getUserFromDb,
+  getSingleUserFromDb,
+  updateUserInDb,
+  deleteUserFromDb,
 };
