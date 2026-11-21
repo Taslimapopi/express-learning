@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs";
 import { pool } from "../../db";
 import jwt from "jsonwebtoken";
-import { Result } from "pg";
 import config from "../../config";
 
 const loginIntoDb = async (payload: { email: string; password: string }) => {
@@ -31,6 +30,7 @@ const loginIntoDb = async (payload: { email: string; password: string }) => {
     id: user.rows[0].id,
     name: user.rows[0].name,
     email: user.rows[0].email,
+    role: user.rows[0].role,
   };
 
   const accessToken = jwt.sign(jwtPayload, config.jwt_secret, {
