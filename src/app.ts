@@ -11,6 +11,7 @@ import { authRoute } from "./modules/auth/auth.route";
 import fs from "fs";
 import logger from "./middleware/logger";
 import globalErrorHandler from "./middleware/globalErrorHandler";
+import cookieParser from "cookie-parser";
 
 const app: Application = express();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use(express.text());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger);
+app.use(cookieParser());
 
 // app.use((req, res, next) => {
 //   // console.log(req.method, req.url, Date.now);

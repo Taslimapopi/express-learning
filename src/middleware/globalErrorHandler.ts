@@ -1,4 +1,3 @@
-import { defaultMaxListeners } from "events";
 import type { NextFunction, Request, Response } from "express";
 
 const globalErrorHandler = (

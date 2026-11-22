@@ -43,3 +43,11 @@ Method :GET | URL: /api/v1/users |TIME: 1795286905913
 Method :GET | URL: /api/v1/users |TIME: 1795286935707
 Method :GET | URL: /api/v1/users/7 |TIME: 1795286956237
 Method :GET | URL: /api/v1/users/7 |TIME: 1795287299083
+Method :POST | URL: /api/v1/auth/login |TIME: 1795350201965
+Method :POST | URL: /api/v1/auth/login |TIME: 1795351398589
+Method :POST | URL: /api/v1/auth/login |TIME: 1795351402972
+Method :POST | URL: /api/v1/auth/login |TIME: 1795352925857
+Method :POST | URL: /api/v1/auth/login |TIME: 1795374067411
+Method :POST | URL: /api/v1/auth/generate-token |TIME: 1795374138487
+Method :POST | URL: /api/v1/auth/generate-token |TIME: 1795374298040
+Method :POST | URL: /api/v1/auth/generate-token |TIME: 1795375002068
